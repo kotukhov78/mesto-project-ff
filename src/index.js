@@ -1,0 +1,51 @@
+import './pages/index.css';
+import { initialCards } from './scripts/cards.js';
+import { createCard } from './components/card.js';
+import { openModal, closeModal } from './components/modal.js';
+
+// Находим все модальные окна
+const popupEdit = document.querySelector('.popup_type_edit');
+const popupNew = document.querySelector('.popup_type_new-card');
+const popupImg = document.querySelector('.popup_type_image');
+
+// Находим элементы для вызова модальных окон
+const buttonEdit = document.querySelector('.profile__edit-button');
+const buttonAdd = document.querySelector('.profile__add-button');
+
+
+// @todo: Функция удаления карточки
+function handleDeleteCard(cardElement) {
+    cardElement.remove();
+};
+
+// @todo: Вывести карточки на страницу
+const placesList = document.querySelector('.places__list');
+initialCards.forEach((cardData) => {
+    const cardElement = createCard(cardData, handleDeleteCard, handleClickImg);
+    placesList.append(cardElement);
+});
+
+
+// Обработчики для вызова модальных окон
+buttonEdit.addEventListener('click', () => openModal(popupEdit));
+buttonAdd.addEventListener('click', () => openModal(popupNew));
+
+// Находим все модальные окна
+// Для каждого модального окна вешаем обработчики закрытия на оверлей и крестик
+const popups = document.querySelectorAll('.popup');
+popups.forEach((popup) => {
+    popup.addEventListener('click', function (event) {
+        if (event.target.classList.contains('popup__close') || event.target === popup) {
+        closeModal(popup);
+        }
+    });
+});
+
+//Функция вывода popup-картинки на страницу при клике
+function handleClickImg(link, name) {
+    const modalImage = popupImg.querySelector('.popup__image');
+    const modalCaption = popupImg.querySelector('.popup__caption');
+    modalImage.src = link;
+    modalCaption.textContent = name;
+    openModal(popupImg);
+};

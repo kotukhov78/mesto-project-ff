@@ -49,3 +49,51 @@ function handleClickImg(link, name) {
     modalCaption.textContent = name;
     openModal(popupImg);
 };
+
+// Находим форму в DOM
+// Находим поля формы в DOM
+const formEdit = document.querySelector('form[name="edit-profile"]');
+const nameInput = formEdit.querySelector('.popup__input_type_name');
+const jobInput = formEdit.querySelector('.popup__input_type_description');
+const profileTitle = document.querySelector('.profile__title');
+const profileDescription = document.querySelector('.profile__description');
+
+// Получим значение полей jobInput и nameInput из свойства value
+nameInput.value = profileTitle.textContent;
+jobInput.value = profileDescription.textContent;
+
+// Обработчик «отправки» формы
+function handleFormSubmit(evt) {
+    evt.preventDefault();
+
+    // Вставим новые значения с помощью textContent
+    profileTitle.textContent = nameInput.value;
+    profileDescription.textContent = jobInput.value;
+    //закроем окно принудительно
+    closeModal(popupEdit);
+};
+formEdit.addEventListener( 'submit', handleFormSubmit );
+
+const formAddNewCard = document.querySelector('form[name="new-place"]');
+
+function handleNewCard(evt) {
+    evt.preventDefault();
+
+    // Получаем данные из формы
+    let cardData = {
+        name: formAddNewCard.querySelector('.popup__input_type_card-name').value,
+        link: formAddNewCard.querySelector('.popup__input_type_url').value
+    };
+        
+    // Создаем карточку
+    const cardNew = createCard(cardData, handleDeleteCard, handleClickImg);
+    
+    // Добавляем карточку в начало контейнера
+    placesList.prepend(cardNew);
+    
+    // Закрываем попап и очищаем форму
+    closeModal(popupNew);
+    formAddNewCard.reset();
+};
+formAddNewCard.addEventListener( 'submit', handleNewCard );
+

@@ -21,7 +21,7 @@ function handleDeleteCard(cardElement) {
 // @todo: Вывести карточки на страницу
 const placesList = document.querySelector('.places__list');
 initialCards.forEach((cardData) => {
-    const cardElement = createCard(cardData, handleDeleteCard, handleClickImg);
+    const cardElement = createCard(cardData, handleDeleteCard, handleClickImg, cardLike);
     placesList.append(cardElement);
 });
 
@@ -84,7 +84,7 @@ function handleNewCard(event) {
         link: formAddNewCard.querySelector('.popup__input_type_url').value
     };
     // Создаем карточку
-    const cardNew = createCard(cardData, handleDeleteCard, handleClickImg);
+    const cardNew = createCard(cardData, handleDeleteCard, handleClickImg, cardLike);
     // Добавляем карточку в начало контейнера
     placesList.prepend(cardNew);
     // Закрываем попап и очищаем форму
@@ -93,3 +93,6 @@ function handleNewCard(event) {
 };
 formAddNewCard.addEventListener( 'submit', handleNewCard );
 
+function cardLike(cardLikeButton) {
+    cardLikeButton.classList.toggle('card__like-button_is-active');
+};

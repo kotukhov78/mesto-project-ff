@@ -1,7 +1,7 @@
 
 
 // @todo: Функция создания карточки
-export function createCard(cardData, handleDeleteCard, handleClickImg) {
+export function createCard(cardData, handleDeleteCard, handleClickImg, cardLike) {
     
     // @todo: Темплейт карточки
     const cardTemplate = document.querySelector('#card-template').content;
@@ -29,7 +29,7 @@ export function createCard(cardData, handleDeleteCard, handleClickImg) {
 
     // слушатель и функция лайка карточки
     cardLikeButton.addEventListener('click', () => {
-        cardLikeButton.classList.toggle('card__like-button_is-active');
+        cardLike(cardLikeButton);
     });
 
     return cardElement;

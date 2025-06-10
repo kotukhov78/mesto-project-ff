@@ -10,7 +10,7 @@ export function openModal(popup) {
     };
 
     document.addEventListener('keydown', handleCloseEsc);
-    popup._handleCloseEsc = handleCloseEsc;
+    popup.handleCloseEsc = handleCloseEsc;
 };
 
 // Функция закрытия модального окна
@@ -18,8 +18,8 @@ export function closeModal(popup) {
     popup.classList.remove('popup_is-opened');
     
     //удалим обработчик закрытия окна
-    document.removeEventListener('keydown', popup._handleCloseEsc);
-    delete popup._handleCloseEsc;
+    document.removeEventListener('keydown', popup.handleCloseEsc);
+    delete popup.handleCloseEsc;
 };
 
 

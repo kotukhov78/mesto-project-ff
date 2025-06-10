@@ -37,6 +37,9 @@ popups.forEach((popup) => {
     popup.addEventListener('click', function (event) {
         if (event.target.classList.contains('popup__close') || event.target === popup) {
         closeModal(popup);
+        nameInput.value = profileTitle.textContent;
+        jobInput.value = profileDescription.textContent;
+        formAddNewCard.reset();
         }
     });
 });
@@ -93,6 +96,7 @@ function handleNewCard(event) {
 };
 formAddNewCard.addEventListener( 'submit', handleNewCard );
 
+// скрипт лайка карточки
 function cardLike(cardLikeButton) {
     cardLikeButton.classList.toggle('card__like-button_is-active');
 };

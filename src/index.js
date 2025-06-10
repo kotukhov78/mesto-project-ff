@@ -50,22 +50,20 @@ function handleClickImg(link, name) {
     openModal(popupImg);
 };
 
+// скрипт редактирования данных профиля
 // Находим форму в DOM
-// Находим поля формы в DOM
 const formEdit = document.querySelector('form[name="edit-profile"]');
+// Находим поля формы в DOM
 const nameInput = formEdit.querySelector('.popup__input_type_name');
 const jobInput = formEdit.querySelector('.popup__input_type_description');
+// Получим значение полей jobInput и nameInput из свойства value
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
-
-// Получим значение полей jobInput и nameInput из свойства value
 nameInput.value = profileTitle.textContent;
 jobInput.value = profileDescription.textContent;
-
 // Обработчик «отправки» формы
-function handleFormSubmit(evt) {
-    evt.preventDefault();
-
+function handleFormSubmit(event) {
+    event.preventDefault();
     // Вставим новые значения с помощью textContent
     profileTitle.textContent = nameInput.value;
     profileDescription.textContent = jobInput.value;
@@ -74,23 +72,21 @@ function handleFormSubmit(evt) {
 };
 formEdit.addEventListener( 'submit', handleFormSubmit );
 
+// скрипт добавления новой карточки
+// Находим форму в DOM
 const formAddNewCard = document.querySelector('form[name="new-place"]');
-
-function handleNewCard(evt) {
-    evt.preventDefault();
-
+// Обработчик «отправки» формы новой карточки
+function handleNewCard(event) {
+    event.preventDefault();
     // Получаем данные из формы
     let cardData = {
         name: formAddNewCard.querySelector('.popup__input_type_card-name').value,
         link: formAddNewCard.querySelector('.popup__input_type_url').value
     };
-        
     // Создаем карточку
     const cardNew = createCard(cardData, handleDeleteCard, handleClickImg);
-    
     // Добавляем карточку в начало контейнера
     placesList.prepend(cardNew);
-    
     // Закрываем попап и очищаем форму
     closeModal(popupNew);
     formAddNewCard.reset();

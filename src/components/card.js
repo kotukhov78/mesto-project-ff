@@ -1,5 +1,4 @@
 
-
 // @todo: Функция создания карточки
 export function createCard(cardData, handleDeleteCard, handleClickImg, cardLike) {
     
@@ -35,3 +34,12 @@ export function createCard(cardData, handleDeleteCard, handleClickImg, cardLike)
     return cardElement;
 };
 
+// @todo: Функция удаления карточки
+export function handleDeleteCard(cardElement) {
+    cardElement.remove();
+};
+
+// скрипт лайка карточки
+export function cardLike(cardLikeButton) {
+    cardLikeButton.classList.toggle('card__like-button_is-active');
+};

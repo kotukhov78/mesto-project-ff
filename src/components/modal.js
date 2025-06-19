@@ -2,7 +2,7 @@
 export function openModal(popup) {
     popup.classList.add('popup_is-opened');
     
-    //добавим обработчик закрытия окна по кнопке
+    //добавим обработчик закрытия окна по кнопке Escape
     const handleCloseEsc = (event) => {
         if (event.key === 'Escape') {
             closeModal(popup);

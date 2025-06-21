@@ -45,6 +45,7 @@
           pattern="[a-zA-Zа-яА-ЯёЁ\- ]*"
           name="name" 
           id="name_input"
+          data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
           class="popup__input popup__input_type_name" 
           placeholder="Имя" 
           required>
@@ -56,6 +57,7 @@
           pattern="[a-zA-Zа-яА-ЯёЁ\- ]*"
           name="description" 
           id="description_input"
+          data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
           class="popup__input popup__input_type_description" 
           placeholder="Занятие" 
           required>
@@ -78,16 +80,18 @@
           maxlength="30"
           pattern="[a-zA-Zа-яА-ЯёЁ\- ]*"
           id="place-name_input"
+          data-error-message="Разрешены только латинские, кириллические буквы, знаки дефиса и пробелы"
           placeholder="Название" 
           required>
         <span class="popup__input-error place-name_input-error"></span>
         <input 
           type="url" 
           name="link" 
-          data-error-message="ошибка в ссылке"
           class="popup__input popup__input_type_url" 
+          id="link_input"
           placeholder="Ссылка на картинку" 
           required>
+          <span class="popup__input-error link_input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>

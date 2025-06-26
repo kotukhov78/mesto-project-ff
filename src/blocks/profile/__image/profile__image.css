@@ -1,12 +1,57 @@
-.profile__image {
+.profile__image-edit {
+  position: relative;
   width: 120px;
   height: 120px;
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
-  background-size: cover;
-  background-position: center;
   margin: 0 29px 0 0;
+  cursor: pointer;
+}
+
+.profile__image {
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar__overlay { 
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.8);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity .5s;
+}
+
+.avatar__overlay::after {
+  content: "";
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  top: 47px;
+  left: 47px;
+  z-index: 2;
+  opacity: 0;
+  background-image: url(/src/images/edit-icon.svg);
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition: opacity .5s;
+}
+
+.profile__image-edit:hover .avatar__overlay {
+  opacity: 1;
+}
+
+.profile__image-edit:hover .avatar__overlay::after {
+  opacity: 1;
 }
 
 @media screen and (max-width: 740px) {

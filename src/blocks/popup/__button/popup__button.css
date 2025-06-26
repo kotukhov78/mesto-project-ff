@@ -14,6 +14,10 @@
   margin-top: 48px;
 }
 
+.popup_type_confirm .popup__button {
+  margin-top: 33px;
+}
+
 .popup__button:hover {
   background: rgba(0, 0, 0, 0.8);
   cursor: pointer;

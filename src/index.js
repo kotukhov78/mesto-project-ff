@@ -2,6 +2,10 @@ import './pages/index.css';
 import { createCard, cardLike } from './components/card.js';
 import { openModal, closeModal } from './components/modal.js';
 import { enableValidation, clearValidation } from "./components/validation.js";
+import { deleteCardApi, formEditApi, newCardApi, getUserData, getAllCards, editAvatarApi } from "./components/api.js";
+
+// создадим контейнер для вывода карточек на страницу
+const placesList = document.querySelector('.places__list');
 
 // Находим все модальные окна
 const popupEdit = document.querySelector('.popup_type_edit');
@@ -14,9 +18,6 @@ const buttonAdd = document.querySelector('.profile__add-button');
 
 //находим кнопку отправки данных модального окна создания новой карточки
 const buttonCloseAdd = popupNew.querySelector('.popup__button');
-
-// создадим контейнер для вывода карточек на страницу
-const placesList = document.querySelector('.places__list');
 
 // Обработчик для вызова модального окна редактирования профиля
 buttonEdit.addEventListener('click', () => {
@@ -54,6 +55,9 @@ function handleClickImg(link, name) {
 };
 
 
+
+
+
 // Находим попап подтверждения удаления
 const popupConfirm = document.querySelector('.popup_type_confirm');
 const formConfirm = popupConfirm.querySelector('.popup__form');
@@ -74,27 +78,18 @@ function handleDeleteCard(id, cardElement) {
 function handleConfirmDelete(event) {
     event.preventDefault();
     
-    fetch(`https://nomoreparties.co/v1/wff-cohort-41/cards/${idCardForDelete}`, {
-        method: 'DELETE',
-        headers: {
-        authorization: '7bcddfbe-b09d-482c-b0c1-bf3d57a4e0cf',
-        'Content-Type': 'application/json'
-        }
-    })
-    .then(res => {
-        if (res.ok) {
-            // Удаляем карточку из DOM
-            cardForDelete.remove();
-            closeModal(popupConfirm);
-        } else {
-        return Promise.reject(`Ошибка: ${res.status}`);
-        }
+    deleteCardApi(idCardForDelete)
+    .then(() => {
+        // Удаляем карточку из DOM
+        cardForDelete.remove();
+        closeModal(popupConfirm);
     })
     .catch(err => {
         console.log(err);
     })
 }
 buttonCloseDelete.addEventListener('click', handleConfirmDelete);
+
 
 
 
@@ -107,33 +102,36 @@ const jobInput = formEdit.querySelector('.popup__input_type_description');
 // Получим значение полей jobInput и nameInput из свойства value
 const profileTitle = document.querySelector('.profile__title');
 const profileDescription = document.querySelector('.profile__description');
-const profileAvatar = document.querySelector('.profile__image');
 
-// Обработчик «отправки» формы
+// Обработчик «отправки» формы на редактирование профиля
 function handleFormEdit(event) {
     event.preventDefault();
     // Вставим новые значения с помощью textContent
     profileTitle.textContent = nameInput.value;
     profileDescription.textContent = jobInput.value;
-    //закроем окно принудительно
-    closeModal(popupEdit);
 
-    fetch('https://nomoreparties.co/v1/wff-cohort-41/users/me', {
-        method: 'PATCH',
-        headers: {
-            authorization: '7bcddfbe-b09d-482c-b0c1-bf3d57a4e0cf',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: profileTitle.textContent,
-            about: profileDescription.textContent
-        })
+    const submitButtonEdit = formEdit.querySelector('.popup__button');
+    const initialTextEdit = submitButtonEdit.textContent;
+    // Меняем текст кнопки на "Сохранение..."
+    submitButtonEdit.textContent = 'Сохранение...';
+
+    formEditApi (profileTitle.textContent, profileDescription.textContent)
+    .then(() => {
+        //закроем окно принудительно
+        closeModal(popupEdit);
     })
     .catch((err) => {
         console.log(err);
     })
+    .finally(() => {
+    // Возвращаем исходный текст кнопки
+    submitButtonEdit.textContent = initialTextEdit;
+    })
 };
 formEdit.addEventListener( 'submit', handleFormEdit );
+
+
+
 
 // скрипт добавления новой карточки
 // Находим форму в DOM
@@ -146,26 +144,12 @@ function handleNewCard(event) {
         name: formAddNewCard.querySelector('.popup__input_type_card-name').value,
         link: formAddNewCard.querySelector('.popup__input_type_url').value
     };
-
-
+    const submitButtonAddCard = formAddNewCard.querySelector('.popup__button');
+    const initialTextAddCard = submitButtonAddCard.textContent;
+    // Меняем текст кнопки на "Сохранение..."
+    submitButtonAddCard.textContent = 'Сохранение...';
     //отправим карточку на сервер после добавления в DOM
-    fetch('https://nomoreparties.co/v1/wff-cohort-41/cards', {
-        method: 'POST',
-        headers: {
-            authorization: '7bcddfbe-b09d-482c-b0c1-bf3d57a4e0cf',
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            name: cardData.name,
-            link: cardData.link
-        })
-    })
-    .then(res => {
-        if (res.ok) {
-            return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
+    newCardApi (cardData.name, cardData.link)
     .then(newCard => {
         // Создаем карточку
         const cardNew = createCard(newCard, handleDeleteCard, handleClickImg, cardLike, userId);
@@ -181,9 +165,17 @@ function handleNewCard(event) {
     .catch((err) => {
         console.log(err);
     })
+    .finally(() => {
+    // Возвращаем исходный текст кнопки
+    submitButtonAddCard.textContent = initialTextAddCard;
+    })
 };
 formAddNewCard.addEventListener( 'submit', handleNewCard );
 
+
+
+
+//скрипт общей проверки на валидность
 const validationSettings = {
     formSelector: '.popup__form',
     inputSelector: '.popup__input',
@@ -195,43 +187,11 @@ const validationSettings = {
 //вызовем функцию
 enableValidation(validationSettings);
 
+
+
+
+//скрипт загрузки данных профиля и карточек с сервера
 let userId = null;
-
-function getUserData() {
-    return fetch('https://nomoreparties.co/v1/wff-cohort-41/users/me', {
-        headers: {
-            authorization: '7bcddfbe-b09d-482c-b0c1-bf3d57a4e0cf',
-            'Content-Type': 'application/json'
-        }
-    })
-    .then((res) => {
-        if (res.ok) {
-            return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-        console.log(err);
-    })
-};
-
-function getAllCards() {
-    return fetch('https://nomoreparties.co/v1/wff-cohort-41/cards', {
-        headers: {
-            authorization: '7bcddfbe-b09d-482c-b0c1-bf3d57a4e0cf',
-            'Content-Type': 'application/json'
-        }
-    })
-    .then((res) => {
-        if (res.ok) {
-            return res.json();
-        }
-        return Promise.reject(`Ошибка: ${res.status}`);
-    })
-    .catch((err) => {
-        console.log(err);
-    })
-};
 
 Promise.all([getUserData(), getAllCards()])
     .then(([userData, cards]) => {
@@ -259,4 +219,44 @@ Promise.all([getUserData(), getAllCards()])
 
 
 
+//смена аватарки при клике на нее
+const avatarEdit = document.querySelector('.profile__image-edit');
+const popupAvatar = document.querySelector('.popup__avatar-edit');
+const formEditAvatar = popupAvatar.querySelector('.popup__form');
+const avatarLinkInput = formEditAvatar.querySelector('.popup__input_avatar_url');
+const profileAvatar = document.querySelector('.profile__image');
 
+
+function handleEditAvatar(event) {
+    event.preventDefault();
+
+    const submitButtonAva = formEditAvatar.querySelector('.popup__button');
+    const initialTextAva = submitButtonAva.textContent;
+    // Меняем текст кнопки на "Сохранение..."
+    submitButtonAva.textContent = 'Сохранение...';
+
+    //отправим на сервер
+    editAvatarApi (avatarLinkInput.value)
+    .then(data => {
+        // Обновляем аватар на странице
+        profileAvatar.src = data.avatar;
+        closeModal(popupAvatar);
+    })
+    .catch((err) => {
+        console.log(err);
+    })
+    .finally(() => {
+    // Возвращаем исходный текст кнопки
+    submitButtonAva.textContent = initialTextAva;
+    })
+};
+formEditAvatar.addEventListener( 'submit', handleEditAvatar );
+
+
+
+// слушатель для вызова модального окна изменения аватарки
+avatarEdit.addEventListener('click', () => {
+    openModal(popupAvatar);
+    avatarLinkInput.value = profileAvatar.textContent;
+    clearValidation(formEditAvatar, validationSettings);
+});

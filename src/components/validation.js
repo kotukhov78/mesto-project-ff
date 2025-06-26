@@ -1,3 +1,4 @@
+//функции проверки на валидность и вывода и удаления сообщений
 //напишем функцию показа сообщения об ошибке
 const showInputError = (formElement, inputElement, errorMessage) => {
     const errorElement = formElement.querySelector(`.${inputElement.id}-error`);

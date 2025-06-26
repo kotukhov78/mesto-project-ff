@@ -77,7 +77,11 @@ function handleDeleteCard(id, cardElement) {
 // Обработчик подтверждения удаления
 function handleConfirmDelete(event) {
     event.preventDefault();
-    
+
+    const initialTextDelete = buttonCloseDelete.textContent;
+    // Меняем текст кнопки на "Удаление..."
+    buttonCloseDelete.textContent = 'Удаление...';
+
     deleteCardApi(idCardForDelete)
     .then(() => {
         // Удаляем карточку из DOM
@@ -86,6 +90,10 @@ function handleConfirmDelete(event) {
     })
     .catch(err => {
         console.log(err);
+    })
+    .finally(() => {
+    // Возвращаем исходный текст кнопки
+    buttonCloseDelete.textContent = initialTextDelete;
     })
 }
 buttonCloseDelete.addEventListener('click', handleConfirmDelete);

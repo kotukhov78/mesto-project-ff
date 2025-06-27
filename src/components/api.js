@@ -50,9 +50,6 @@ export const getUserData = () => {
         headers: config.headers,
     })
     .then(checkResponse)
-    .catch((err) => {
-        console.log(err);
-    })
 };
 
 export const getAllCards = () => {
@@ -60,9 +57,6 @@ export const getAllCards = () => {
         headers: config.headers,
     })
     .then(checkResponse)
-    .catch((err) => {
-        console.log(err);
-    })
 };
 
 export const editAvatarApi = (avatarLink) => {

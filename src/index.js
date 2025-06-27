@@ -12,12 +12,16 @@ const popupEdit = document.querySelector('.popup_type_edit');
 const popupNew = document.querySelector('.popup_type_new-card');
 const popupImg = document.querySelector('.popup_type_image');
 
+// находим фото и подпись к нему для вывода в попап 
+const modalImage = popupImg.querySelector('.popup__image');
+const modalCaption = popupImg.querySelector('.popup__caption');
+
 // Находим элементы для вызова модальных окон
 const buttonEdit = document.querySelector('.profile__edit-button');
 const buttonAdd = document.querySelector('.profile__add-button');
 
-//находим кнопку отправки данных модального окна создания новой карточки
-const buttonCloseAdd = popupNew.querySelector('.popup__button');
+// //находим кнопку отправки данных модального окна создания новой карточки
+// const buttonCloseAdd = popupNew.querySelector('.popup__button');
 
 // Обработчик для вызова модального окна редактирования профиля
 buttonEdit.addEventListener('click', () => {
@@ -46,8 +50,6 @@ popups.forEach((popup) => {
 
 //Функция вывода popup-картинки на страницу при клике
 function handleClickImg(link, name) {
-    const modalImage = popupImg.querySelector('.popup__image');
-    const modalCaption = popupImg.querySelector('.popup__caption');
     modalImage.src = link;
     modalImage.alt = name;
     modalCaption.textContent = name;
@@ -56,11 +58,9 @@ function handleClickImg(link, name) {
 
 
 
-
-
 // Находим попап подтверждения удаления
 const popupConfirm = document.querySelector('.popup_type_confirm');
-const formConfirm = popupConfirm.querySelector('.popup__form');
+const formConfirm = document.forms["confirm"];
 const buttonCloseDelete = formConfirm.querySelector('.popup__button');
 
 // Переменные для хранения данных об удаляемой карточке
@@ -114,17 +114,17 @@ const profileDescription = document.querySelector('.profile__description');
 // Обработчик «отправки» формы на редактирование профиля
 function handleFormEdit(event) {
     event.preventDefault();
-    // Вставим новые значения с помощью textContent
-    profileTitle.textContent = nameInput.value;
-    profileDescription.textContent = jobInput.value;
 
     const submitButtonEdit = formEdit.querySelector('.popup__button');
     const initialTextEdit = submitButtonEdit.textContent;
     // Меняем текст кнопки на "Сохранение..."
     submitButtonEdit.textContent = 'Сохранение...';
 
-    formEditApi (profileTitle.textContent, profileDescription.textContent)
+    formEditApi (nameInput.value, jobInput.value)
     .then(() => {
+        // Вставим новые значения с помощью textContent
+        profileTitle.textContent = nameInput.value;
+        profileDescription.textContent = jobInput.value;
         //закроем окно принудительно
         closeModal(popupEdit);
     })
@@ -148,7 +148,7 @@ const formAddNewCard = document.querySelector('form[name="new-place"]');
 function handleNewCard(event) {
     event.preventDefault();
     // Получаем данные из формы
-    let cardData = {
+    const cardData = {
         name: formAddNewCard.querySelector('.popup__input_type_card-name').value,
         link: formAddNewCard.querySelector('.popup__input_type_url').value
     };
@@ -166,9 +166,6 @@ function handleNewCard(event) {
         // Закрываем попап и очищаем форму
         closeModal(popupNew);
         formAddNewCard.reset();
-        //уберем активность кнопки при открытии окна
-        buttonCloseAdd.disabled = true;
-        buttonCloseAdd.classList.add('popup__button_disabled');
     })
     .catch((err) => {
         console.log(err);
@@ -188,7 +185,7 @@ const validationSettings = {
     formSelector: '.popup__form',
     inputSelector: '.popup__input',
     submitButtonSelector: '.popup__button',
-    inactiveButtonClass: 'popup__button_disaibled',
+    inactiveButtonClass: 'popup__button_disabled',
     inputErrorClass: 'popup__input_type_error',
     errorClass: 'popup__input-error_active'
 };
